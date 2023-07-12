@@ -20,6 +20,17 @@ startGame = () => {
         }
     }
 
+    const NAME = prompt("What's your name?");
+    const GAME_SECTION = document.getElementById("game");
+    const GAME_TEXT = document.createElement("p");
+    GAME_TEXT.innerHTML = `Nice to meet you ${NAME}. Welcome aboard the USS Assembly!
+    <br><br>
+    `;
+    GAME_SECTION.appendChild(GAME_TEXT);
+    setTimeout(() => {
+        GAME_TEXT.innerHTML += `Looks like we're gonna have to skip the pleasantries...we've got enemy ships inboud!`
+    }, 2000);
+
     const ENEMY = new AlienShip();
     console.log(`New enemy ship appeared!
     Hull: ${ENEMY.hull} Firepower: ${ENEMY.firepower} Accuracy: ${ENEMY.accuracy}`);

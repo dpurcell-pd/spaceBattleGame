@@ -20,6 +20,8 @@ startGame = () => {
         }
     }
 
+    const PLAYER = new USSAssembly();
+    const ALIEN_HORDE = [];
     const NAME = prompt("What's your name?");
     const GAME_SECTION = document.getElementById("game");
     const GAME_TEXT = document.createElement("p");
@@ -34,15 +36,21 @@ startGame = () => {
         Take a moment to get your console open so you can get a read on their stats, and when you're ready...press the button to engage the first target!`
 
         GAME_SECTION.appendChild(ATTACK_BTN);
+
+        for (let i = 0; i < 6; i++) {           
+            const ALIEN_SHIP = new AlienShip();
+            ALIEN_HORDE.push(ALIEN_SHIP);
+            console.log(`New enemy ship appeared!
+            Hull: ${ALIEN_SHIP.hull} Firepower: ${ALIEN_SHIP.firepower} Accuracy: ${ALIEN_SHIP.accuracy}`);    
+        }
+        console.log(ALIEN_HORDE);    
     }, 2000);
 
-    const ENEMY = new AlienShip();
-    console.log(`New enemy ship appeared!
-    Hull: ${ENEMY.hull} Firepower: ${ENEMY.firepower} Accuracy: ${ENEMY.accuracy}`);    
+    
 }
 
 attack = () => {
-    
+
 }
 
 

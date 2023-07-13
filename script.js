@@ -28,8 +28,7 @@ class SpaceBattleGame {
                 <button id="attack-btn">ATTACK</button>
                 `;
             const ATTACK_BTN = document.getElementById("attack-btn");                       
-            ATTACK_BTN.addEventListener("click", SpaceBattleGame.attack);
-            GAME_SECTION.appendChild(ATTACK_BTN);        
+            ATTACK_BTN.addEventListener("click", SpaceBattleGame.attack);                    
             
             SpaceBattleGame.alienHorde = AlienShip.generateHorde();
             SpaceBattleGame.player = new USSAssembly(); 

@@ -1,9 +1,96 @@
-let alienHorde;
-let player;
-let retreat = false;
+class SpaceBattleGame {
+    constructor() {
+        this.alienHorde = [];
+        this.player = player;
+        this.retreat = false;
+        this.intro = this.intro.bind(this);
+        this.attack = this.attack.bind(this);
 
-const GAME_SECTION = document.getElementById("game");
-const GAME_TEXT = document.createElement("p");    
+    }
+    
+    static intro = () => {    
+        const NAME = prompt("What's your name?");
+        
+        GAME_SECTION.innerHTML = `<p>Nice to meet you, ${NAME}. Welcome aboard the USS Assembly!
+        <br><br>
+        
+        </p>`;       
+        SpaceBattleGame.startGame();
+    }
+
+    static startGame = () => {
+        setTimeout(() => {
+            GAME_SECTION.innerHTML += `<p>Looks like we're gonna have to skip the pleasantries...we've got enemy ships inbound!
+            <br><br>
+            
+            Take a moment to get your console open so you can get a read on their stats, and when you're ready...press the button below to engage the first target!
+            </p>`
+            GAME_SECTION.innerHTML += `
+                <button id="attack-btn">ATTACK</button>
+                `;
+            const ATTACK_BTN = document.getElementById("attack-btn");                       
+            ATTACK_BTN.addEventListener("click", SpaceBattleGame.attack);
+            GAME_SECTION.appendChild(ATTACK_BTN);        
+            
+            SpaceBattleGame.alienHorde = AlienShip.generateHorde();
+            SpaceBattleGame.player = new USSAssembly(); 
+        }, 2000);
+    
+    }
+
+   static attack = () => {    
+        while (!SpaceBattleGame.retreat && SpaceBattleGame.alienHorde.length > 0) {      
+            console.log("Player Phase"); 
+            if (Math.random() < SpaceBattleGame.player.accuracy) {
+                SpaceBattleGame.alienHorde[0].hull -= SpaceBattleGame.player.firepower;
+                console.log(`You've successfully hit the alien ship for ${SpaceBattleGame.player.firepower} damage!`);
+                
+                if (SpaceBattleGame.alienHorde[0].hull <= 0) {                             
+                    SpaceBattleGame.alienHorde.shift();
+                    if (SpaceBattleGame.alienHorde.length > 0) {
+                        console.log(`Remaining enemies: ${SpaceBattleGame.alienHorde.length}`);           
+                        const DECISION = prompt("You've destroyed one of the horde! Would you like to retreat? (Y/N)");
+                        if (DECISION !== null && DECISION.toLowerCase() === "y") {
+                            SpaceBattleGame.retreat = true;                                       
+                            GAME_SECTION.innerHTML = `<p>The USS Assembly narrowly escaped the alien horde and lived to fight another day...</p>`                                                                                     
+                        } else if (DECISION.toLowerCase() === "n" || DECISION === null || DECISION === "") {
+                            console.log("Then let's keep fighting!");
+                        }
+                    } else {
+                        GAME_SECTION.innerHTML = `<p>The USS Assembly has successfully defeated the alien invasion and saved Earth.
+                            <br><br>    
+    
+                            Congratulations, soldier.
+                            </p>`;
+                        }                
+                }
+            } else {
+                console.log("Our shots missed! DON'T LET UP!!!")
+            }
+    
+            if (!SpaceBattleGame.retreat && SpaceBattleGame.alienHorde.length > 0) {
+                console.log("Enemy Phase");
+                if (Math.random() < SpaceBattleGame.alienHorde[0].accuracy) {
+                    SpaceBattleGame.player.hull -= SpaceBattleGame.alienHorde[0].firepower;
+                    console.log(`The alien forces have landed a shot of ${SpaceBattleGame.alienHorde[0].firepower} against our hull!`);
+                    console.log(`Remaining hull strength: ${SpaceBattleGame.player.hull}`);
+    
+                    if (SpaceBattleGame.player.hull <= 0) {
+                        GAME_SECTION.innerHTML = `<p>The USS Assembly suffered catastrophic damage against the alien horde and was destroyed.
+                        <br><br>
+           
+                        Game Over.
+                        </p>`;
+                    } 
+                } else {
+                    console.log("The enemy shot missed! STAY FOCUSED!!!");
+                }
+            }
+        }       
+    }
+
+}
+    
 
 class USSAssembly {
     constructor(hull = 20, firepower = 5, accuracy = .7) {
@@ -36,87 +123,9 @@ class AlienShip {
     }
 }
 
-intro = () => {
-    ATTACK_BTN.remove();    
-    const NAME = prompt("What's your name?");
-    
-    GAME_TEXT.innerHTML = `Nice to meet you, ${NAME}. Welcome aboard the USS Assembly!
-    <br><br>
-    `;
-    GAME_SECTION.appendChild(GAME_TEXT); 
-    
-    startGame();
-}
 
-startGame = () => {
-    setTimeout(() => {
-        GAME_TEXT.innerHTML += `Looks like we're gonna have to skip the pleasantries...we've got enemy ships inbound!
-        <br><br>
-        
-        Take a moment to get your console open so you can get a read on their stats, and when you're ready...press the button below to engage the first target!`
-        GAME_SECTION.appendChild(ATTACK_BTN);        
-        alienHorde = AlienShip.generateHorde();
-        player = new USSAssembly(); 
-    }, 2000);
-
-}
-
-attack = () => {    
-    while (!retreat && alienHorde.length > 0) {      
-        console.log("Player Phase"); 
-        if (Math.random() < player.accuracy) {
-            alienHorde[0].hull -= player.firepower;
-            console.log(`You've successfully hit the alien ship for ${player.firepower} damage!`);
-            
-            if (alienHorde[0].hull <= 0) {                             
-                alienHorde.shift();
-                if (alienHorde.length > 0) {
-                    console.log(`Remaining enemies: ${alienHorde.length}`);           
-                    const DECISION = prompt("You've destroyed one of the horde! Would you like to retreat? (Y/N)");           
-                    if (DECISION !== null && DECISION.toLowerCase() === "y") {
-                        retreat = true;
-                        GAME_TEXT.innerHTML = `The USS Assembly narrowly escaped the alien horde and lived to fight another day...`
-                        ATTACK_BTN.remove();                                                
-                    } else if (DECISION.toLowerCase() === "n" || DECISION === null || DECISION === "") {
-                        console.log("Then let's keep fighting!");
-                    }
-                } else {
-                    GAME_TEXT.innerHTML = `The USS Assembly has successfully defeated the alien invasion and saved Earth.
-                        <br><br>    
-
-                        Congratulations, soldier.
-                        `;
-                    }                
-            }
-        } else {
-            console.log("Our shots missed! DON'T LET UP!!!")
-        }
-
-        if (!retreat && alienHorde.length > 0) {
-            console.log("Enemy Phase");
-            if (Math.random() < alienHorde[0].accuracy) {
-                player.hull -= alienHorde[0].firepower;
-                console.log(`The alien forces have landed a shot of ${alienHorde[0].firepower} against our hull!`);
-                console.log(`Remaining hull strength: ${player.hull}`);
-
-                if (player.hull <= 0) {
-                    GAME_TEXT.innerHTML = `The USS Assembly suffered catastrophic damage against the alien horde and was destroyed.
-                    <br><br>
-       
-                    Game Over.
-                    `;
-                } 
-            } else {
-                console.log("The enemy shot missed! STAY FOCUSED!!!");
-            }
-        }
-    }       
-}
-
-
-const ATTACK_BTN = document.createElement("button");
-ATTACK_BTN.innerHTML = "ATTACK!"
-ATTACK_BTN.addEventListener("click", attack);
+const GAME_SECTION = document.getElementById("game");
+const GAME_TEXT = document.createElement("p");
 
 randomizeStat = (min, max) => {    
     return Math.random() * (max - min) + min;
@@ -124,6 +133,6 @@ randomizeStat = (min, max) => {
 
 const NEW_GAME = true;
 const gameButton = document.getElementById("game-btn");
-gameButton.addEventListener("click", intro);
+gameButton.addEventListener("click", SpaceBattleGame.intro);
 
 

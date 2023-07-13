@@ -66,17 +66,30 @@ startGame = () => {
 }
 
 attack = () => {    
-    if (Math.random() < player.accuracy) {
-        alienHorde[0].hull -= player.firepower;
-        console.log(`You've successfully hit the alien ship for ${player.firepower} damage!`);         
-    }
-
-    if (alienHorde[0].hull <= 0) {
-        const DECISION = prompt("You've destroyed one of the horde! Would you like to retreat? (Y/N)");
-        if (DECISION.toLowerCase === "y") {
-            retreat = true;
+    while (!retreat && player.hull > 0 && alienHorde.length > 0) {
+       
+        if (Math.random() < player.accuracy) {
+            alienHorde[0].hull -= player.firepower;
+            console.log(`You've successfully hit the alien ship for ${player.firepower} damage!`);         
         } else {
-            console.log("Then lets keep fighting!");
+            console.log("The shot missed!");
+        }
+
+        if (alienHorde[0].hull <= 0) {
+            alienHorde.shift();           
+            const DECISION = prompt("You've destroyed one of the horde! Would you like to retreat? (Y/N)");           
+            if (DECISION.toLowerCase() === "y") {
+                retreat = true;
+                GAME_TEXT.innerHTML = `The USS Assembly narrowly escaped the alien horde and lived to fight another day...`                              
+            } else {
+                console.log("Then lets keep fighting!");
+            }
+        } else {
+            GAME_TEXT.innerHTML = `The USS Assembly suffered catastrophic damage against the alien horde and was destroyed.
+            <br><br>
+            
+            Game Over.
+            `;
         }
     }
 }

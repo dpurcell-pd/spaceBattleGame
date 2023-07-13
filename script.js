@@ -1,3 +1,7 @@
+let alienHorde;
+let player;
+let retreat = false;
+
 const GAME_SECTION = document.getElementById("game");
 const GAME_TEXT = document.createElement("p");
 
@@ -20,19 +24,17 @@ class AlienShip {
         this.accuracy = accuracy;
     }
 
-    static generateHorde() {
-        const ALIEN_HORDE = [];        
+    static generateHorde() { 
+        const ALIEN_HORDE = [];              
         for (let i = 0; i < 6; i++) {   
             const ALIEN_SHIP = new AlienShip();
             ALIEN_HORDE.push(ALIEN_SHIP);
             console.log(`New enemy ship appeared!
             Hull: ${ALIEN_SHIP.hull} Firepower: ${ALIEN_SHIP.firepower} Accuracy: ${ALIEN_SHIP.accuracy}`);                
         }
-        return ALIEN_HORDE;
+        return ALIEN_HORDE;       
     }
 }
-
-
 
 intro = () => {    
     const NAME = prompt("What's your name?");
@@ -57,14 +59,26 @@ startGame = () => {
         ATTACK_BTN.addEventListener("click", attack);
 
         GAME_SECTION.appendChild(ATTACK_BTN);        
-        AlienShip.generateHorde(); 
+        alienHorde = AlienShip.generateHorde();
+        player = new USSAssembly(); 
     }, 2000);
 
 }
 
-attack = () => {
-    console.log('test');
+attack = () => {    
+    if (Math.random() < player.accuracy) {
+        alienHorde[0].hull -= player.firepower;
+        console.log(`You've successfully hit the alien ship for ${player.firepower} damage!`);         
+    }
 
+    if (alienHorde[0].hull <= 0) {
+        const DECISION = prompt("You've destroyed one of the horde! Would you like to retreat? (Y/N)");
+        if (DECISION.toLowerCase === "y") {
+            retreat = true;
+        } else {
+            console.log("Then lets keep fighting!");
+        }
+    }
 }
 
 

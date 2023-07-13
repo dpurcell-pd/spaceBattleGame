@@ -5,7 +5,6 @@ class SpaceBattleGame {
         this.retreat = false;
         this.intro = this.intro.bind(this);
         this.attack = this.attack.bind(this);
-
     }
     
     static intro = () => {    
@@ -34,8 +33,7 @@ class SpaceBattleGame {
             
             SpaceBattleGame.alienHorde = AlienShip.generateHorde();
             SpaceBattleGame.player = new USSAssembly(); 
-        }, 2000);
-    
+        }, 2000);    
     }
 
    static attack = () => {    
@@ -88,9 +86,7 @@ class SpaceBattleGame {
             }
         }       
     }
-
-}
-    
+}    
 
 class USSAssembly {
     constructor(hull = 20, firepower = 5, accuracy = .7) {
@@ -131,7 +127,6 @@ randomizeStat = (min, max) => {
     return Math.random() * (max - min) + min;
 }
 
-const NEW_GAME = true;
 const gameButton = document.getElementById("game-btn");
 gameButton.addEventListener("click", SpaceBattleGame.intro);
 
